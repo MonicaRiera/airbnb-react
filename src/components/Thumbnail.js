@@ -50,7 +50,7 @@ class Thumbnail extends React.Component {
 						{
 							[...Array(5-this.state.place.rating)].map((e, i) => <i className="far fa-star" key={i}></i>)
 						}
-						<span>{this.state.reviews.length} Reviews</span>
+						<span>{this.state.reviews} Reviews</span>
 					</span>
 					{
 						this.state.place.booked ?
