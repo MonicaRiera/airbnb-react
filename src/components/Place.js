@@ -2,10 +2,25 @@ import React from 'react'
 import Review from './Review'
 import Gallery from './Gallery'
 import Nav from './Nav'
+import axios from 'axios'
 
 class Place extends React.Component {
 	state = {
-		place: {profileImg: 'https://randomuser.me/api/portraits/women/2.jpg', host: 'Kitty', title: 'Luxury Villa Indu Siam', location: 'Koh Samui, Thailand', type: 'Entire Villa', guests: 10, rooms: 7, baths: 6, description: 'Stylish, tropical, luxurious, airy and absolute beach front, this villa combines form and function, enjoying magnificent views of Samui’s small islands and the sea beyond. With 520sqm of indoor/outdoor living space with 5 ensuite bedrooms, large living area, beachfront infinity pool, garden, air conditioned gym, professional pool table, bbq and Sala, this villa is perfect for up to 10 adults With 260sqm (2798sqfeet) of living space and 250sqm (2,700sqfeet) of outdoor space.', price: 350, rating: 4, reviews: 4},
+		place: {
+			images: [],
+			type: {
+				name: ''
+			},
+			amenities: [
+				{name:'', icon:''}
+			],
+			host: {
+				avatar:'',
+				name:''
+			},
+			rating: 0,
+			reviews: []
+		},
 
 		amenities: [
 			{className:'fas fa-utensils', title:'Kitchen'},
@@ -21,33 +36,42 @@ class Place extends React.Component {
 
 	}
 
+	componentWillMount() {
+		axios.get('http://localhost:4000/places/5d71f584ee4204aa748de72d')
+		.then(res => {
+			console.log(res.data)
+			this.setState({place: res.data})
+		})
+		.catch(err => console.log(err))
+	}
+
 	render () {
 		return (
 			<>
 			<Nav />
-			<Gallery />
+			<Gallery images={this.state.place.images}/>
 			<div className="grid medium">
 				<div className="grid sidebar-right">
 					<div className="content">
 						<h1>{this.state.place.title}</h1>
 						<small>
 							<i className="fas fa-map-marker-alt"></i>
-							<span>{this.state.place.location}</span>
+							<span>{this.state.place.city}, {this.state.place.country}</span>
 						</small>
 						<div className="user">
-							<div className="avatar" style={{backgroundImage: 'url('+this.state.place.profileImg+')'}}></div>
+							<div className="avatar" style={{backgroundImage: `url(${this.state.place.host.avatar})`}}></div>
 							<div className="name">
 								<small>Hosted by</small>
-								<span>{this.state.place.host}</span>
+								<span>{this.state.place.host.name}</span>
 							</div>
 						</div>
 						<div className="card specs">
 							<div className="content">
 								<ul className="grid two">
-									<li><i className="fas fa-fw fa-home"></i>{this.state.place.type}</li>
+									<li><i className="fas fa-fw fa-home"></i>{this.state.place.type.name}</li>
 									<li><i className="fas fa-fw fa-user-friends"></i>{this.state.place.guests} guests</li>
-									<li><i className="fas fa-fw fa-bed"></i>{this.state.place.rooms} bedrooms</li>
-									<li><i className="fas fa-fw fa-bath"></i>{this.state.place.baths} baths</li>
+									<li><i className="fas fa-fw fa-bed"></i>{this.state.place.bedrooms} bedrooms</li>
+									<li><i className="fas fa-fw fa-bath"></i>{this.state.place.bathrooms} baths</li>
 								</ul>
 							</div>
 						</div>
@@ -57,12 +81,12 @@ class Place extends React.Component {
 							<div className="content">
 								<ul className="grid two">
 									{
-										this.state.amenities.map(e => <li><i className={e.className}></i>{e.title}</li>)
+										this.state.place.amenities.map((e,i) => <li key={i}><i className={e.icon}></i>{e.name}</li>)
 									}
 								</ul>
 							</div>
 						</div>
-						<Review />
+						<Review reviews={this.state.place.reviews}/>
 					</div>
 					<div className="sidebar booking">
 						<div className="card shadow">
@@ -75,7 +99,7 @@ class Place extends React.Component {
 								{
 									[...Array(5-this.state.place.rating)].map((e, i) => <i className="far fa-star" key={i}></i>)
 								}
-									<span>{this.state.place.reviews} Reviews</span>
+									<span>{this.state.place.reviews.length} Reviews</span>
 								</small>
 								<form className="small">
 									<div className="group">
@@ -87,7 +111,7 @@ class Place extends React.Component {
 										<label>Guests</label>
 										<select>
 											{
-												[...Array(this.state.maxGuests)].map((e,i) => <option>{i+1} guests</option>)
+												[...Array(this.state.place.guests)].map((e,i) => <option key={i}>{i+1} guests</option>)
 											}
 										</select>
 									</div>
