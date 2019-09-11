@@ -12,19 +12,21 @@ class Places extends React.Component {
 		sortOptions: [{value:'date', option:'Latest'}, {value:'price', option:'Price'}, {value:'rating', option:'Rating'}],
 
 		filters: {
-			rooms: function(array, n) {return array.filter(p => p.bedrooms >= n)},
-			types: function(array, t) {return t === 'All Types' ? array.filter(p => p.type.name) : array.filter(p => p.type.name === t)},
-			price: function(array, n) {return array.filter(p => p.price <= n)},
-			search: function(array, t) {return array.filter(p => p.title.toLowerCase().includes(t.toLowerCase()) || p.city.toLowerCase().includes(t.toLowerCase()) || p.country.toLowerCase().includes(t.toLowerCase()))}
+			rooms: function(x) {return `min_rooms=${x}`},
+			types: function(x) {return `type=${x}`},
+			price: function(x) {return `max_price=${x}`},
+			search: function(x) {return `	text=${x}`}
 		}
 	}
 
 	searchFilter = (event, filter) => {
-		let places = this.state.places
 		let input = event.target.value
-		console.log(input)
-		let filteredPlaces = this.state.filters[filter](places, input)
-		this.setState({filteredPlaces: filteredPlaces})
+		let query = this.state.filters[filter](input)
+		axios.get(`http://localhost:4000/places?${query}`)
+		.then(res => {
+			let filteredPlaces = res.data
+			this.setState({filteredPlaces: filteredPlaces})
+		})
 	}
 
 	componentDidMount() {
@@ -33,7 +35,6 @@ class Places extends React.Component {
 			axios.get('http://localhost:4000/types')
 		])
 		.then(([places, types]) => {
-			console.log(types.data);
 			this.setState({
 				places: places.data,
 				filteredPlaces: places.data,
@@ -58,10 +59,8 @@ class Places extends React.Component {
 				<select onChange={(e) => {this.searchFilter(e, 'types')}}>
 					{
 						this.state.types.map((e,i) => {
-							return e.name === 'All Types' ? <option value={e.name} key={i} selected>{e.name}</option> : <option value={e.name} key={i}>{e.name}</option>
-						}
-
-						)
+							return e.name === 'All Types' ? <option value={e._id} key={i} selected>{e.name}</option> : <option id={e._id} value={e._id} key={i}>{e.name}</option>
+						})
 					}
 				</select>
 				<input onChange={(e) => {this.searchFilter(e, 'price')}} type="number" placeholder="max price" />
