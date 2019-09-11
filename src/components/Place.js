@@ -3,7 +3,9 @@ import Review from './Review'
 import Gallery from './Gallery'
 import Nav from './Nav'
 import axios from 'axios'
-
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment'
 
 class Place extends React.Component {
 	state = {
@@ -21,16 +23,33 @@ class Place extends React.Component {
 			},
 			rating: 0,
 			reviews: []
+		},
+
+		dates: {
+			startDate: new Date(),
+			finalDate: ''
 		}
+
 	}
 
 	componentWillMount() {
 		axios.get('http://localhost:4000/places/5d71f584ee4204aa748de72d')
 		.then(res => {
-			console.log(res.data)
 			this.setState({place: res.data})
 		})
 		.catch(err => console.log(err))
+	}
+
+	handleChangeStart = date => {
+		let dates = this.state.dates
+		dates.startDate = date
+		this.setState({dates})
+	}
+
+	handleChangeFinal = date => {
+		let dates = this.state.dates
+		dates.finalDate = date
+		this.setState({dates})
 	}
 
 	render () {
@@ -92,8 +111,8 @@ class Place extends React.Component {
 								<form className="small">
 									<div className="group">
 										<label>Dates</label>
-										<input type="text" placeholder="Check-in"/>
-										<input type="text" placeholder="Check-out"/>
+										<DatePicker placeholderText="Check-in" selected={this.state.dates.startDate} className="start" onChange={this.handleChangeStart} dateFormat="dd/MM/yyyy"/>
+										<DatePicker placeholderText="Check-out" selected={this.state.dates.finalDate} className="final" onChange={this.handleChangeFinal} dateFormat="dd/MM/yyyy"/>
 									</div>
 									<div className="group">
 										<label>Guests</label>

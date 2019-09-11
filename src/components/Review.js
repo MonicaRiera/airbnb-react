@@ -16,7 +16,6 @@ class Review extends React.Component {
 	}
 
 	componentWillReceiveProps(props) {
-		console.log(props);
 		this.setState({
 			reviews: props.reviews
 		})
