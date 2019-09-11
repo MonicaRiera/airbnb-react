@@ -27,23 +27,9 @@ class Confirm extends React.Component {
 			finalDate: '',
 			guests: 0
 		},
-		nights: '',
+		nights: 0,
 		total: 0
 	}
-
-	// componentWillMount() {
-	// 	axios.get('http://localhost:4000/places/5d71f584ee4204aa748de72d')
-	// 	.then(res => {
-	// 		this.setState({place: res.data})
-	// 	})
-	// }
-	//
-	// UNSAFE_componentWillReceiveProps(props) {
-	// 	this.setState({
-	// 		place: props.location.place,
-	// 		form: props.location.form
-	// 	}).then()
-	// }
 
 	componentDidMount() {
 		let place = this.state.place
@@ -51,13 +37,12 @@ class Confirm extends React.Component {
 		let nights = this.state.nights
 		let total = this.state.total
 
-
 		if (this.props.location.form) {
 			place = this.props.location.place
 			form = this.props.location.form
 			let startDate = moment(form.startDate)
 			let finalDate = moment(form.finalDate)
-			nights = Number(finalDate.diff(startDate, 'days'))+1
+			nights = finalDate.diff(startDate, 'days') + 1
 			total = place.price * nights * form.guests
 		}
 
@@ -85,6 +70,10 @@ class Confirm extends React.Component {
 		let form = this.state.form
 		form.guests = e.target.value
 		this.setState({form})
+	}
+
+	goBack = () => {
+		this.props.history.goBack()
 	}
 
 	render () {
@@ -124,7 +113,7 @@ class Confirm extends React.Component {
 							<button className="primary">Confirm</button>
 						</form>
 						<hr/>
-						<button>Cancel</button>
+						<button onClick={this.goBack}>Cancel</button>
 					</div>
 				</div>
 			</div>
