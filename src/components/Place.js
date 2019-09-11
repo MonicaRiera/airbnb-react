@@ -33,7 +33,7 @@ class Place extends React.Component {
 	}
 
 	componentWillMount() {
-		axios.get('http://localhost:4000/places/5d71f584ee4204aa748de72d')
+		axios.get(`http://localhost:4000/places/${this.props.match.params.id}`)
 		.then(res => {
 			this.setState({place: res.data})
 		})

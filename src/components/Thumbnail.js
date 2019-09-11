@@ -18,7 +18,7 @@ class Thumbnail extends React.Component {
 	}
 	render () {
 		return (
-			<Link className="card link" to="/place" params={{id: this.state.place.title}}>
+			<Link className="card link" to={`/place/${this.state.place._id}`}>
 				<div className="image" style={{backgroundImage: 'url('+ this.state.place.img + ')'}}>
 					<button className="icon">
 						<i className="far fa-heart"></i>

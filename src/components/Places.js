@@ -75,7 +75,7 @@ class Places extends React.Component {
 			</div>
 			<div className="grid five large">
 			{
-				this.state.filteredPlaces.map((p,i) => <Thumbnail place={p} key={i} />)
+				this.state.filteredPlaces.map((p,i) => <Thumbnail place={p} key={p._id} />)
 			}
 			</div>
 			</>

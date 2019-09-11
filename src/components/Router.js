@@ -23,7 +23,7 @@ class Router extends React.Component {
 				<Route path='/signup' component={Signup} />
 				<Route path='/places' component={Places} />
 				<Route path='/create' component={Create} />
-				<Route path='/place' component={Place} />
+				<Route path='/place/:id' component={Place} />
 				<Route path='/host' component={Host} />
         <Route path='/' component={Login} />
       </Switch>
