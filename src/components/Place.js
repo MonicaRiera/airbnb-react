@@ -4,6 +4,7 @@ import Gallery from './Gallery'
 import Nav from './Nav'
 import axios from 'axios'
 
+
 class Place extends React.Component {
 	state = {
 		place: {
@@ -20,20 +21,7 @@ class Place extends React.Component {
 			},
 			rating: 0,
 			reviews: []
-		},
-
-		amenities: [
-			{className:'fas fa-utensils', title:'Kitchen'},
-			{className:'fas fa-dumbbell', title:'Gym'},
-			{className:'fas fa-wifi', title:'Wi-Fi'},
-			{className:'fas fa-tshirt', title:'Iron'},
-			{className:'fas fa-swimmer', title:'Swimming Pool'},
-			{className:'fas fa-wind', title:'Air Conditioning'},
-			{className:'fas fa-tv', title:'TV'},
-		],
-
-		maxGuests: 10,
-
+		}
 	}
 
 	componentWillMount() {

@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 class Review extends React.Component {
 
@@ -44,7 +45,7 @@ class Review extends React.Component {
 								<div className="user">
 									<div className="avatar" style={{backgroundImage : 'url(' + r.author.avatar + ')'}}></div>
 									<div className="name">
-										<small>{r.date}</small>
+										<small>{moment(r.date).format('D MMM YYYY')}</small>
 										<span>{r.author.name}</span>
 									</div>
 								</div>
