@@ -1,23 +1,92 @@
 import React from 'react'
 import Nav from './Nav'
 import Thumbnail from './Thumbnail'
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css";
+import moment from 'moment'
 
 class Confirm extends React.Component {
 	state = {
-		place: {id:0,
-			img:'https://q-ak.bstatic.com/images/hotel/max1024x768/186/186223203.jpg',
-			type:'Entire Villa',
-			rooms:7,
-			title:'Luxury Villa Indu Siam',
-			price: 350,
-			rating: 4,
-			reviews: 37,
-			location:'Koh Samui, Thailand',
-			guests: 10,
-			baths: 6,
-			description:'Stylish, tropical, luxurious, airy and absolute beach front, this villa combines form and function, enjoying magnificent views of Samui’s small islands and the sea beyond. With 520sqm of indoor/outdoor living space with 5 ensuite bedrooms, large living area, beachfront infinity pool, garden, air conditioned gym, professional pool table, bbq and Sala, this villa is perfect for up to 10 adults With 260sqm (2798sqfeet) of living space and 250sqm (2,700sqfeet) of outdoor space.',
-			liked: true}
+		place: {
+			images: [],
+			type: {
+				name: ''
+			},
+			amenities: [
+				{name:'', icon:''}
+			],
+			host: {
+				avatar:'',
+				name:''
+			},
+			rating: 0,
+			reviews: []
+		},
+		form: {
+			startDate: '',
+			finalDate: '',
+			guests: 0
+		},
+		nights: '',
+		total: 0
 	}
+
+	// componentWillMount() {
+	// 	axios.get('http://localhost:4000/places/5d71f584ee4204aa748de72d')
+	// 	.then(res => {
+	// 		this.setState({place: res.data})
+	// 	})
+	// }
+	//
+	// UNSAFE_componentWillReceiveProps(props) {
+	// 	this.setState({
+	// 		place: props.location.place,
+	// 		form: props.location.form
+	// 	}).then()
+	// }
+
+	componentDidMount() {
+		let place = this.state.place
+		let form = this.state.form
+		let nights = this.state.nights
+		let total = this.state.total
+
+
+		if (this.props.location.form) {
+			place = this.props.location.place
+			form = this.props.location.form
+			let startDate = moment(form.startDate)
+			let finalDate = moment(form.finalDate)
+			nights = Number(finalDate.diff(startDate, 'days'))+1
+			total = place.price * nights * form.guests
+		}
+
+		this.setState({
+			place: place,
+			form: form,
+			nights: nights,
+			total: total
+		})
+	}
+
+	handleChangeStart = date => {
+		let form = this.state.form
+		form.startDate = date
+		this.setState({form})
+	}
+
+	handleChangeFinal = date => {
+		let form = this.state.form
+		form.finalDate = date
+		this.setState({form})
+	}
+
+	setGuests = e => {
+		let form = this.state.form
+		form.guests = e.target.value
+		this.setState({form})
+	}
+
 	render () {
 		return (
 			<>
@@ -32,30 +101,25 @@ class Confirm extends React.Component {
 						<form>
 							<div className="group">
 								<label>From</label>
-								<input type="text" value="12/11/2019"/>
+								<DatePicker placeholderText={this.state.form.startDate} selected={this.state.form.startDate} className="start" onChange={this.handleChangeStart} dateFormat="dd/MM/yyyy"/>
 							</div>
 							<div className="group">
 								<label>To</label>
-								<input type="text" value="15/11/2019"/>
+								<DatePicker placeholderText={this.state.form.finalDate} selected={this.state.form.finalDate} className="final" onChange={this.handleChangeFinal} dateFormat="dd/MM/yyyy"/>
 							</div>
 							<div className="group">
 								<label>Guests</label>
 								<select>
-									<option>1 guest</option>
-									<option>2 guests</option>
-									<option>3 guests</option>
-									<option selected>4 guests</option>
-									<option>5 guests</option>
-									<option>6 guests</option>
-									<option>7 guests</option>
-									<option>8 guests</option>
-									<option>9 guests</option>
-									<option>10 guests</option>
+									{
+										[...Array(this.state.place.guests)].map((e,i) => {
+											return e === this.state.form.guests ? <option selected key={i} value={i+1}>{i+1} guests</option> : <option key={i} value={i+1}>{i+1} guests</option>
+										})
+									}
 								</select>
 							</div>
 							<div className="group">
-								<label>Total: 3 nights</label>
-								<h2>$1,050</h2>
+								<label>Total: {this.state.nights} nights</label>
+								<h2>${this.state.total}</h2>
 							</div>
 							<button className="primary">Confirm</button>
 						</form>

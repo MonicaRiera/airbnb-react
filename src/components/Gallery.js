@@ -15,7 +15,7 @@ class Gallery extends React.Component {
 		})
 	}
 
-	componentWillReceiveProps(props) {
+	UNSAFE_componentWillReceiveProps(props) {
 		this.setState({
 			images: props.images,
 			mainImage: props.images[0]

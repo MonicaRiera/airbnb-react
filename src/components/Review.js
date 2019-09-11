@@ -15,7 +15,7 @@ class Review extends React.Component {
 		]
 	}
 
-	componentWillReceiveProps(props) {
+	UNSAFE_componentWillReceiveProps(props) {
 		this.setState({
 			reviews: props.reviews
 		})

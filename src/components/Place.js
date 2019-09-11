@@ -5,7 +5,6 @@ import Nav from './Nav'
 import axios from 'axios'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css";
-import moment from 'moment'
 
 class Place extends React.Component {
 	state = {
@@ -25,15 +24,17 @@ class Place extends React.Component {
 			reviews: []
 		},
 
-		dates: {
+		form: {
 			startDate: new Date(),
-			finalDate: ''
+			finalDate: '',
+			guests: 1
 		}
 
 	}
 
-	componentWillMount() {
-		axios.get(`http://localhost:4000/places/${this.props.match.params.id}`)
+	UNSAFE_componentWillMount() {
+		let place = this.props.match.params.id
+		axios.get(`http://localhost:4000/places/${place}`)
 		.then(res => {
 			this.setState({place: res.data})
 		})
@@ -41,15 +42,30 @@ class Place extends React.Component {
 	}
 
 	handleChangeStart = date => {
-		let dates = this.state.dates
-		dates.startDate = date
-		this.setState({dates})
+		let form = this.state.form
+		form.startDate = date
+		this.setState({form})
 	}
 
 	handleChangeFinal = date => {
-		let dates = this.state.dates
-		dates.finalDate = date
-		this.setState({dates})
+		let form = this.state.form
+		form.finalDate = date
+		this.setState({form})
+	}
+
+	setGuests = e => {
+		let form = this.state.form
+		form.guests = e.target.value
+		this.setState({form})
+	}
+
+	sendForm = event => {
+		console.log(this.state.form);
+		this.props.history.push({
+			pathname: '/confirm',
+			form: this.state.form,
+			place: this.state.place
+		})
 	}
 
 	render () {
@@ -108,22 +124,22 @@ class Place extends React.Component {
 								}
 									<span>{this.state.place.reviews.length} Reviews</span>
 								</small>
-								<form className="small">
+								<form className="small" onSubmit={e => this.sendForm(e)}>
 									<div className="group">
 										<label>Dates</label>
-										<DatePicker placeholderText="Check-in" selected={this.state.dates.startDate} className="start" onChange={this.handleChangeStart} dateFormat="dd/MM/yyyy"/>
-										<DatePicker placeholderText="Check-out" selected={this.state.dates.finalDate} className="final" onChange={this.handleChangeFinal} dateFormat="dd/MM/yyyy"/>
+										<DatePicker placeholderText="Check-in" selected={this.state.form.startDate} className="start" onChange={this.handleChangeStart} dateFormat="dd/MM/yyyy"/>
+										<DatePicker placeholderText="Check-out" selected={this.state.form.finalDate} className="final" onChange={this.handleChangeFinal} dateFormat="dd/MM/yyyy"/>
 									</div>
 									<div className="group">
 										<label>Guests</label>
-										<select>
+										<select onChange={this.setGuests}>
 											{
-												[...Array(this.state.place.guests)].map((e,i) => <option key={i}>{i+1} guests</option>)
+												[...Array(this.state.place.guests)].map((e,i) => <option key={i} value={i+1}>{i+1} guests</option>)
 											}
 										</select>
 									</div>
 									<div className="group">
-										<button className="secondary full">Book this place</button>
+										<button type="submit" className="secondary full">Book this place</button>
 									</div>
 								</form>
 							</div>

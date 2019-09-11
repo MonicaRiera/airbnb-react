@@ -7,11 +7,11 @@ class Thumbnail extends React.Component {
 		reviews: []
 	}
 
-	componentWillReceiveProps(props) {
+	UNSAFE_componentWillReceiveProps(props) {
 		this.setState({place: props.place})
 	}
 
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		if (this.props.place.reviews) {
 			this.setState({reviews: this.props.place.reviews})
 		}
