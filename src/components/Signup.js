@@ -1,16 +1,43 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import axios from 'axios'
 
 
 class Signup extends React.Component {
 	state = {
 		formFields: [
-			{label:'Name', type:'text'},
-			{label:'Email', type:'email'},
-			{label:'Password', type:'password'},
-			{label:'Location', type:'text'},
-			{label:'Profile Picture', type:'file'}
-		]
+			{label:'Name', type:'text', value:'name'},
+			{label:'Email', type:'email', value:'email'},
+			{label:'Password', type:'password', value:'password'},
+			{label:'Location', type:'text', value:'location'},
+			{label:'Profile Picture', type:'file', value:'avatar'}
+		],
+
+		user: {
+			name: '',
+			email: '',
+			password: '',
+			location: '',
+			avatar: ''
+		}
+	}
+
+	signup = (e) => {
+		e.preventDefault()
+		console.log(this.state.user)
+		axios.post('http://localhost:4000/signup', this.state.user)
+		.then(res => {
+			console.log(res.data);
+		})
+		.catch(err => {
+			console.log(err)
+		})
+	}
+
+	changeField = (e, field) => {
+		let user = this.state.user
+		user[field] = e.target.value
+		this.setState({user})
 	}
 
 	render () {
@@ -19,12 +46,12 @@ class Signup extends React.Component {
 			<div className="card small">
 				<div className="content">
 					<div className="logo"></div>
-					<form>
+					<form onSubmit={this.signup}>
 						{
-							this.state.formFields.map(e =>
-								<div className="group">
+							this.state.formFields.map((e,i) =>
+								<div key={i} className="group">
 									<label>{e.label}</label>
-									<input type={e.type}/>
+									<input value={this.state.user[e.value]} onChange={(event) => this.changeField(event, e.value)} type={e.type}/>
 								</div>
 							)
 						}
