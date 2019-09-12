@@ -27,7 +27,7 @@ class Signup extends React.Component {
 		console.log(this.state.user)
 		axios.post('http://localhost:4000/signup', this.state.user)
 		.then(res => {
-			console.log(res.data);
+			localStorage.setItem('token', res.data.token)
 			this.props.history.push({
 				pathname: '/places'
 			})
