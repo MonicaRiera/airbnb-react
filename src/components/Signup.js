@@ -27,7 +27,6 @@ class Signup extends React.Component {
 		axios.post('http://localhost:4000/signup', this.state.user)
 		.then(res => {
 			localStorage.setItem('token', res.data.token)
-			console.log(res.data.token);
 		})
 		.catch(err => {
 			console.log(err)
@@ -57,7 +56,7 @@ class Signup extends React.Component {
 									<input
 										value={this.state.user[e.value]}
 										required={
-											e.value === 'avatar'? false : !this.state.user[e.value]
+											e.value === 'avatar'? false : true
 										}
 										onChange={(event) => this.changeField(event, e.value)}
 										type={e.type}/>

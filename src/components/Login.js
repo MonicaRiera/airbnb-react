@@ -1,8 +1,31 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-
+import axios from 'axios'
 
 class Login extends React.Component {
+	state = {
+		user: {
+			email: '',
+			password: ''
+		}
+	}
+
+	login = (e) => {
+		e.preventDefault()
+		axios.post('http://localhost:4000/login', this.state.user)
+		.then(res => {
+			console.log(res.data)
+		})
+		.catch(err => {
+			console.log(err)
+		})
+	}
+
+	changeField = (e, field) => {
+		let user = this.state.user
+		user[field] = e.target.value
+		this.setState({user})
+	}
 
 	render () {
 		return (
@@ -10,14 +33,14 @@ class Login extends React.Component {
 			<div className="card small">
 				<div className="content">
 					<div className="logo"></div>
-					<form>
+					<form onSubmit={this.login}>
 						<div className="group">
 							<label>Email</label>
-							<input type="email"/>
+							<input required onChange={(e) => this.changeField(e, 'email')} type="email"/>
 						</div>
 						<div className="group">
 							<label>Password</label>
-							<input type="password"/>
+							<input required onChange={(e) => this.changeField(e, 'password')} type="password"/>
 						</div>
 						<button className="primary">Login</button>
 					</form>
