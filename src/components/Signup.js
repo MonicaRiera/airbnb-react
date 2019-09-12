@@ -24,16 +24,16 @@ class Signup extends React.Component {
 
 	signup = (e) => {
 		e.preventDefault()
-		console.log(this.state.user)
 		axios.post('http://localhost:4000/signup', this.state.user)
 		.then(res => {
 			localStorage.setItem('token', res.data.token)
-			this.props.history.push({
-				pathname: '/places'
-			})
+			console.log(res.data.token);
 		})
 		.catch(err => {
 			console.log(err)
+		})
+		this.props.history.push({
+			pathname: '/places'
 		})
 	}
 
@@ -54,7 +54,13 @@ class Signup extends React.Component {
 							this.state.formFields.map((e,i) =>
 								<div key={i} className="group">
 									<label>{e.label}</label>
-									<input value={this.state.user[e.value]} onChange={(event) => this.changeField(event, e.value)} type={e.type}/>
+									<input
+										value={this.state.user[e.value]}
+										required={
+											e.value === 'avatar'? false : !this.state.user[e.value]
+										}
+										onChange={(event) => this.changeField(event, e.value)}
+										type={e.type}/>
 								</div>
 							)
 						}
