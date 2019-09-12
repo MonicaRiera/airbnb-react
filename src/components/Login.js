@@ -14,10 +14,14 @@ class Login extends React.Component {
 		e.preventDefault()
 		axios.post('http://localhost:4000/login', this.state.user)
 		.then(res => {
-			console.log(res.data)
+			let token = res.data
+			localStorage.setItem('token', token)
 		})
 		.catch(err => {
 			console.log(err)
+		})
+		this.props.history.push({
+			pathname: '/places'
 		})
 	}
 
