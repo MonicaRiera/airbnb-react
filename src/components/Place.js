@@ -25,7 +25,7 @@ class Place extends React.Component {
 		},
 
 		form: {
-			startDate: new Date(),
+			startDate: '',
 			finalDate: '',
 			guests: 1
 		}
@@ -41,26 +41,17 @@ class Place extends React.Component {
 		.catch(err => console.log(err))
 	}
 
-	handleChangeStart = date => {
+	changeField = (e, field) => {
 		let form = this.state.form
-		form.startDate = date
-		this.setState({form})
-	}
-
-	handleChangeFinal = date => {
-		let form = this.state.form
-		form.finalDate = date
-		this.setState({form})
-	}
-
-	setGuests = e => {
-		let form = this.state.form
-		form.guests = e.target.value
+		if (field === 'guests') {
+			form[field] = e.target.value
+		} else {
+			form[field] = e
+		}
 		this.setState({form})
 	}
 
 	sendForm = event => {
-		console.log(this.state.form);
 		this.props.history.push({
 			pathname: '/confirm',
 			form: this.state.form,
@@ -127,19 +118,21 @@ class Place extends React.Component {
 								<form className="small" onSubmit={e => this.sendForm(e)}>
 									<div className="group">
 										<label>Dates</label>
-										<DatePicker placeholderText="Check-in" selected={this.state.form.startDate} className="start" onChange={this.handleChangeStart} dateFormat="dd/MM/yyyy"/>
-										<DatePicker placeholderText="Check-out" selected={this.state.form.finalDate} className="final" onChange={this.handleChangeFinal} dateFormat="dd/MM/yyyy"/>
+										<DatePicker placeholderText="Check-in" selected={this.state.form.startDate} onChange={(e) => this.changeField(e, 'startDate')} dateFormat="dd/MM/yyyy"/>
+										<DatePicker placeholderText="Check-out" selected={this.state.form.finalDate} onChange={(e) => this.changeField(e, 'finalDate')} dateFormat="dd/MM/yyyy"/>
 									</div>
 									<div className="group">
 										<label>Guests</label>
-										<select onChange={this.setGuests}>
+										<select onChange={(e) => this.changeField(e, 'guests')}>
 											{
 												[...Array(this.state.place.guests)].map((e,i) => <option key={i} value={i+1}>{i+1} guests</option>)
 											}
 										</select>
 									</div>
 									<div className="group">
-										<button type="submit" className="secondary full">Book this place</button>
+										<button type="submit" disabled={
+												!this.state.form.startDate || !this.state.form.finalDate
+											} className="secondary full">Book this place</button>
 									</div>
 								</form>
 							</div>
