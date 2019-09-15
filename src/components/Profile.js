@@ -1,18 +1,37 @@
 import React from 'react'
 import Nav from './Nav'
 import Sidebar from './Sidebar'
-
+import axios from 'axios'
 
 class Profile extends React.Component {
 	state = {
-		user: {profileImg: 'https://randomuser.me/api/portraits/men/9.jpg', name: 'Tony', email: 'tony@tortugacoders.com', location: 'Thailand'},
+		user: {
+			avatar: '',
+			name: '',
+			email: '',
+			location: ''
+		},
 
 		className : 'Profile'
+	}
+
+	UNSAFE_componentWillMount()  {
+		let token = localStorage.getItem('token')
+		if (token) {
+			axios.get(`http://localhost:4000/auth?token=${token}`)
+			.then(res => {
+				console.log(res.data)
+				this.setState({
+					user: res.data
+				})
+			})
+		}
+
 	}
 	render () {
 		return (
 			<>
-			<Nav />
+			<Nav user={this.state.user}/>
 			<div className="grid medium">
 				<div className="grid sidebar-left">
 					<Sidebar className={this.state.className}/>
@@ -21,20 +40,20 @@ class Profile extends React.Component {
 						<form>
 							<div className="group">
 								<label>Name</label>
-								<input type="text" value={this.state.user.name}/>
+								<input type="text" readOnly value={this.state.user.name}/>
 							</div>
 							<div className="group">
 								<label>Email</label>
-								<input type="email" value={this.state.user.email}/>
+								<input type="email" readOnly value={this.state.user.email}/>
 							</div>
 							<div className="group">
 								<label>Location</label>
-								<input type="text" value={this.state.user.location}/>
+								<input type="text" readOnly value={this.state.user.location}/>
 							</div>
 							<div className="group">
 								<label>Profile Picture</label>
 								<div className="user">
-									<div className="avatar" style={{backgroundImage: 'url('+this.state.user.profileImg+')'}}></div>
+									<div className="avatar" style={{backgroundImage: 'url('+this.state.user.avatar+')'}}></div>
 									<div className="name">
 										<input type="file" />
 									</div>
