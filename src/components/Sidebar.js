@@ -13,7 +13,7 @@ class Sidebar extends React.Component {
 		className: this.props.className
 	}
 
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		let menuOptions = this.state.menuOptions
 		let className = this.state.className
 
@@ -32,7 +32,7 @@ class Sidebar extends React.Component {
 				<ul>
 					{
 						this.state.menuOptions.map((e,i) =>
-								<li className={e.selected ? "active" : ""}>
+								<li key={i} className={e.selected ? "active" : ""}>
 								<Link to={'/' + e.option.toLowerCase()}>{e.option}</Link>
 							</li>
 						)
