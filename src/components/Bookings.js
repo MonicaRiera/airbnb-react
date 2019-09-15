@@ -2,7 +2,7 @@ import React from 'react'
 import Nav from './Nav'
 import Sidebar from './Sidebar'
 import Thumbnail from './Thumbnail'
-
+import axios from 'axios'
 
 class Bookings extends React.Component {
 	state = {
@@ -61,12 +61,28 @@ class Bookings extends React.Component {
 				finalDate: '03 Gen 2019',
 				nights: 7}
 		],
-		className: 'Bookings'
+		className: 'Bookings',
+		user:{
+			name:'',
+			avatar:''
+		}
 	}
+
+	UNSAFE_componentWillMount() {
+		let token = localStorage.getItem('token')
+		axios.get(`http://localhost:4000/auth?token=${token}`)
+		.then(res => {
+			console.log(res)
+			this.setState({
+				user: res.data
+			})
+		})
+	}
+
 	render () {
 		return (
 			<>
-			<Nav />
+			<Nav user={this.state.user}/>
 			<div className="grid medium">
 				<div className="grid sidebar-left">
 					<Sidebar className={this.state.className}/>

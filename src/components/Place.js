@@ -28,11 +28,24 @@ class Place extends React.Component {
 			startDate: '',
 			finalDate: '',
 			guests: 1
+		},
+
+		user: {
+			name:'',
+			avatar:''
 		}
 
 	}
 
 	UNSAFE_componentWillMount() {
+		let token = localStorage.getItem('token')
+		axios.get(`http://localhost:4000/auth?token=${token}`)
+		.then(res => {
+			this.setState({
+				user: res.data
+			})
+		})
+
 		let place = this.props.match.params.id
 		axios.get(`http://localhost:4000/places/${place}`)
 		.then(res => {
@@ -62,7 +75,7 @@ class Place extends React.Component {
 	render () {
 		return (
 			<>
-			<Nav />
+			<Nav user={this.state.user}/>
 			<Gallery images={this.state.place.images}/>
 			<div className="grid medium">
 				<div className="grid sidebar-right">

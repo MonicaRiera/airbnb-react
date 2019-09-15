@@ -16,6 +16,11 @@ class Places extends React.Component {
 			types: function(x) {return `type=${x}`},
 			price: function(x) {return `max_price=${x}`},
 			search: function(x) {return `	text=${x}`}
+		},
+
+		user: {
+			name:'',
+			avatar:''
 		}
 	}
 
@@ -26,6 +31,17 @@ class Places extends React.Component {
 		.then(res => {
 			let filteredPlaces = res.data
 			this.setState({filteredPlaces: filteredPlaces})
+		})
+	}
+
+	UNSAFE_componentWillMount() {
+		let token = localStorage.getItem('token')
+		axios.get(`http://localhost:4000/auth?token=${token}`)
+		.then(res => {
+			console.log(res)
+			this.setState({
+				user: res.data
+			})
 		})
 	}
 
@@ -47,7 +63,7 @@ class Places extends React.Component {
 	render () {
 		return (
 			<>
-			<Nav />
+			<Nav user={this.state.user}/>
 			<div className="filters">
 				<select onChange={(e) => {this.searchFilter(e, 'rooms')}}>
 					{

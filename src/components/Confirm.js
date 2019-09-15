@@ -4,6 +4,7 @@ import Thumbnail from './Thumbnail'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment'
+import axios from 'axios'
 
 class Confirm extends React.Component {
 	state = {
@@ -28,10 +29,24 @@ class Confirm extends React.Component {
 			guests: 0
 		},
 		nights: 0,
-		total: 0
+		total: 0,
+
+		user: {
+			name:'',
+			avatar:''
+		}
 	}
 
 	componentDidMount() {
+
+		let token = localStorage.getItem('token')
+		axios.get(`http://localhost:4000/auth?token=${token}`)
+		.then(res => {
+			this.setState({
+				user: res.data
+			})
+		})
+
 		let place = this.state.place
 		let form = this.state.form
 		let nights = this.state.nights
@@ -54,21 +69,13 @@ class Confirm extends React.Component {
 		})
 	}
 
-	handleChangeStart = date => {
+	changeField = (e, field) => {
 		let form = this.state.form
-		form.startDate = date
-		this.setState({form})
-	}
-
-	handleChangeFinal = date => {
-		let form = this.state.form
-		form.finalDate = date
-		this.setState({form})
-	}
-
-	setGuests = e => {
-		let form = this.state.form
-		form.guests = e.target.value
+		if (field === 'guests') {
+			form[field] = e.target.value
+		} else {
+			form[field] = e
+		}
 		this.setState({form})
 	}
 
@@ -79,7 +86,7 @@ class Confirm extends React.Component {
 	render () {
 		return (
 			<>
-			<Nav />
+			<Nav user={this.state.user}/>
 			<div className="grid medium">
 				<div className="grid sidebar-left">
 					<div className="sidebar">
@@ -90,15 +97,15 @@ class Confirm extends React.Component {
 						<form>
 							<div className="group">
 								<label>From</label>
-								<DatePicker placeholderText={this.state.form.startDate} selected={this.state.form.startDate} className="start" onChange={this.handleChangeStart} dateFormat="dd/MM/yyyy"/>
+								<DatePicker placeholderText={this.state.form.startDate} selected={this.state.form.startDate} className="start" onChange={(e) => this.changeField(e, 'startDate')} dateFormat="dd/MM/yyyy"/>
 							</div>
 							<div className="group">
 								<label>To</label>
-								<DatePicker placeholderText={this.state.form.finalDate} selected={this.state.form.finalDate} className="final" onChange={this.handleChangeFinal} dateFormat="dd/MM/yyyy"/>
+								<DatePicker placeholderText={this.state.form.finalDate} selected={this.state.form.finalDate} className="final" onChange={(e) => this.changeField(e, 'finalDate')} dateFormat="dd/MM/yyyy"/>
 							</div>
 							<div className="group">
 								<label>Guests</label>
-								<select>
+								<select onChange={(e) => this.changeField(e, 'guests')}>
 									{
 										[...Array(this.state.place.guests)].map((e,i) => {
 											return e === this.state.form.guests ? <option selected key={i} value={i+1}>{i+1} guests</option> : <option key={i} value={i+1}>{i+1} guests</option>
