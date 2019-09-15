@@ -4,6 +4,7 @@ import Nav from './Nav'
 import Sidebar from './Sidebar'
 import {Link} from 'react-router-dom'
 import axios from 'axios'
+import { withRouter } from 'react-router-dom';
 
 class Host extends React.Component {
 	state = {
@@ -78,4 +79,4 @@ class Host extends React.Component {
 	}
 }
 
-export default Host;
+export default withRouter(Host);

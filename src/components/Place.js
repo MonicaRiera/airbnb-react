@@ -5,6 +5,7 @@ import Nav from './Nav'
 import axios from 'axios'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css";
+import { withRouter } from 'react-router-dom';
 
 class Place extends React.Component {
 	state = {
@@ -158,4 +159,4 @@ class Place extends React.Component {
 	}
 }
 
-export default Place;
+export default withRouter (Place);

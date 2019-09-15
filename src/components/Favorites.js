@@ -3,6 +3,7 @@ import Nav from './Nav'
 import Sidebar from './Sidebar'
 import Thumbnail from './Thumbnail'
 import axios from 'axios'
+import { withRouter } from 'react-router-dom';
 
 class Favorites extends React.Component {
 	state = {
@@ -89,4 +90,4 @@ class Favorites extends React.Component {
 	}
 }
 
-export default Favorites;
+export default withRouter(Favorites);

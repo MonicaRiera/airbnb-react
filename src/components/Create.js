@@ -2,6 +2,7 @@ import React from 'react'
 import Nav from './Nav'
 import Sidebar from './Sidebar'
 import axios from 'axios'
+import { withRouter } from 'react-router-dom';
 
 class Create extends React.Component {
 
@@ -92,4 +93,4 @@ class Create extends React.Component {
 	}
 }
 
-export default Create;
+export default withRouter(Create);

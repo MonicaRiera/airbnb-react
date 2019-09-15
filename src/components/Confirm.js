@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment'
 import axios from 'axios'
+import { withRouter } from 'react-router-dom';
 
 class Confirm extends React.Component {
 	state = {
@@ -131,4 +132,4 @@ class Confirm extends React.Component {
 	}
 }
 
-export default Confirm;
+export default withRouter(Confirm);

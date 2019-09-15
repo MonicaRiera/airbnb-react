@@ -3,6 +3,7 @@ import Nav from './Nav'
 import Sidebar from './Sidebar'
 import Thumbnail from './Thumbnail'
 import axios from 'axios'
+import { withRouter } from 'react-router-dom';
 
 class Bookings extends React.Component {
 	state = {
@@ -105,4 +106,4 @@ class Bookings extends React.Component {
 	}
 }
 
-export default Bookings;
+export default withRouter(Bookings);

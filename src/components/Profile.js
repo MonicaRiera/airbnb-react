@@ -2,6 +2,7 @@ import React from 'react'
 import Nav from './Nav'
 import Sidebar from './Sidebar'
 import axios from 'axios'
+import { withRouter } from 'react-router-dom';
 
 class Profile extends React.Component {
 	state = {
@@ -13,6 +14,13 @@ class Profile extends React.Component {
 		},
 
 		className : 'Profile'
+	}
+
+	logout = () => {
+		localStorage.removeItem('token')
+		this.props.history.push({
+			pathname: '/'
+		})
 	}
 
 	UNSAFE_componentWillMount()  {
@@ -62,7 +70,7 @@ class Profile extends React.Component {
 							<button>Save Changes</button>
 						</form>
 						<hr/>
-						<button className="secondary">Logout</button>
+						<button className="secondary" onClick={this.logout}>Logout</button>
 					</div>
 				</div>
 			</div>
@@ -72,4 +80,4 @@ class Profile extends React.Component {
 	}
 }
 
-export default Profile;
+export default withRouter (Profile);
