@@ -7,6 +7,7 @@ class Review extends React.Component {
 		reviews: [
 			{
 				author: {
+					_id:'',
 					name:'',
 					avatar:''
 				},
@@ -23,20 +24,7 @@ class Review extends React.Component {
 
 	render () {
 		return (
-			<div className="reviews">
-				<h2>{this.state.reviews.length} Reviews</h2>
-				<form>
-					<div className="group">
-						<label>Leave a review</label>
-						<textarea></textarea>
-						<div className="rating">
-							{
-								[...Array(5)].map((e,i) => <i key={i} className="far fa-star"></i>)
-							}
-						</div>
-						<button className="primary small">Submit</button>
-					</div>
-				</form>
+			<>
 				{
 					this.state.reviews.map((r,i) =>
 						<div key={i} className="card review">
@@ -61,7 +49,7 @@ class Review extends React.Component {
 						</div>
 					)
 				}
-			</div>
+			</>
 		)
 	}
 }

@@ -24,18 +24,54 @@ class Place extends React.Component {
 			rating: 0,
 			reviews: []
 		},
-
 		form: {
 			startDate: '',
 			finalDate: '',
 			guests: 1
 		},
-
+		post: {
+			rating: 0,
+			content: ''
+		},
 		user: {
 			name:'',
-			avatar:''
-		}
+			avatar:'',
+			_id:''
+		},
+		reviewForm: true
+	}
 
+	postReview = (e) => {
+		e.preventDefault()
+		let reviewForm = this.state.reviewForm
+		let reviews = this.state.place.reviews
+
+		axios.post('http://localhost:4000/reviews', {
+			author: this.state.user._id,
+			rating: this.state.post.rating,
+			content: this.state.post.content,
+			place: this.state.place._id
+		})
+		.then(review => {
+			reviews.unshift(review.data)
+			reviewForm = false
+			this.setState({
+				reviews: reviews,
+				reviewForm: reviewForm
+			})
+		})
+	}
+
+	updateContent = (e) => {
+		let post = this.state.post
+		post.content = e.target.value
+		this.setState({post:post})
+	}
+
+	updateRating = (value) => {
+		let post = this.state.post
+		post.rating = value
+		this.setState({post:post})
 	}
 
 	UNSAFE_componentWillMount() {
@@ -45,12 +81,21 @@ class Place extends React.Component {
 			this.setState({
 				user: res.data
 			})
-		})
-
-		let place = this.props.match.params.id
-		axios.get(`http://localhost:4000/places/${place}`)
-		.then(res => {
-			this.setState({place: res.data})
+			let user = this.state.user
+			let reviewForm = this.state.reviewForm
+			let place = this.props.match.params.id
+			axios.get(`http://localhost:4000/places/${place}`)
+			.then(res => {
+				res.data.reviews.forEach(r => {
+					if (r.author._id === user._id) {
+						reviewForm = false
+					}
+				})
+				this.setState({
+					place: res.data,
+					reviewForm: reviewForm
+				})
+			})
 		})
 		.catch(err => console.log(err))
 	}
@@ -114,7 +159,25 @@ class Place extends React.Component {
 								</ul>
 							</div>
 						</div>
-						<Review reviews={this.state.place.reviews}/>
+						<div className="reviews">
+							<h2>{this.state.place.reviews.length} Reviews</h2>
+							{
+								this.state.reviewForm ?
+								<form onSubmit={this.postReview}>
+									<div className="group">
+										<label>Leave a review</label>
+										<textarea onChange={this.updateContent}></textarea>
+										<div className="rating">
+											{
+												[...Array(5)].map((e,i) => <i key={i} onClick={() => this.updateRating(i+1)} className="far fa-star"></i>)
+											}
+										</div>
+										<button className="primary small">Submit</button>
+									</div>
+								</form> : ''
+							}
+							<Review reviews={this.state.place.reviews} user={this.state.user} placeId={this.state.place._id}/>
+						</div>
 					</div>
 					<div className="sidebar booking">
 						<div className="card shadow">
