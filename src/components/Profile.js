@@ -26,7 +26,7 @@ class Profile extends React.Component {
 	UNSAFE_componentWillMount()  {
 		let token = localStorage.getItem('token')
 		if (token) {
-			axios.get(`http://localhost:4000/auth?token=${token}`)
+			axios.get(`${process.env.REACT_APP_API}/auth?token=${token}`)
 			.then(res => {
 				console.log(res.data)
 				this.setState({

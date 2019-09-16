@@ -71,7 +71,7 @@ class Bookings extends React.Component {
 
 	UNSAFE_componentWillMount() {
 		let token = localStorage.getItem('token')
-		axios.get(`http://localhost:4000/auth?token=${token}`)
+		axios.get(`${process.env.REACT_APP_API}/auth?token=${token}`)
 		.then(res => {
 			console.log(res)
 			this.setState({

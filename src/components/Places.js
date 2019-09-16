@@ -27,7 +27,7 @@ class Places extends React.Component {
 	searchFilter = (event, filter) => {
 		let input = event.target.value
 		let query = this.state.filters[filter](input)
-		axios.get(`http://localhost:4000/places?${query}`)
+		axios.get(`${process.env.REACT_APP_API}/places?${query}`)
 		.then(res => {
 			let filteredPlaces = res.data
 			this.setState({filteredPlaces: filteredPlaces})
@@ -36,7 +36,7 @@ class Places extends React.Component {
 
 	UNSAFE_componentWillMount() {
 		let token = localStorage.getItem('token')
-		axios.get(`http://localhost:4000/auth?token=${token}`)
+		axios.get(`${process.env.REACT_APP_API}/auth?token=${token}`)
 		.then(res => {
 			this.setState({
 				user: res.data
@@ -46,8 +46,8 @@ class Places extends React.Component {
 
 	componentDidMount() {
 		Promise.all([
-			axios.get('http://localhost:4000/places/'),
-			axios.get('http://localhost:4000/types')
+			axios.get(`${process.env.REACT_APP_API}/places/`),
+			axios.get(`${process.env.REACT_APP_API}/types`)
 		])
 		.then(([places, types]) => {
 			this.setState({

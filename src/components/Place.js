@@ -46,7 +46,7 @@ class Place extends React.Component {
 		let reviewForm = this.state.reviewForm
 		let reviews = this.state.place.reviews
 
-		axios.post('http://localhost:4000/reviews', {
+		axios.post(`${process.env.REACT_APP_API}/reviews`, {
 			author: this.state.user._id,
 			rating: this.state.post.rating,
 			content: this.state.post.content,
@@ -76,7 +76,7 @@ class Place extends React.Component {
 
 	UNSAFE_componentWillMount() {
 		let token = localStorage.getItem('token')
-		axios.get(`http://localhost:4000/auth?token=${token}`)
+		axios.get(`${process.env.REACT_APP_API}/auth?token=${token}`)
 		.then(res => {
 			this.setState({
 				user: res.data
@@ -84,7 +84,7 @@ class Place extends React.Component {
 			let user = this.state.user
 			let reviewForm = this.state.reviewForm
 			let place = this.props.match.params.id
-			axios.get(`http://localhost:4000/places/${place}`)
+			axios.get(`${process.env.REACT_APP_API}/places/${place}`)
 			.then(res => {
 				res.data.reviews.forEach(r => {
 					if (r.author._id === user._id) {
