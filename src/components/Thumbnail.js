@@ -1,10 +1,23 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import axios from 'axios'
 
 class Thumbnail extends React.Component {
 	state = {
 		place: this.props.place,
 		reviews: []
+	}
+
+	updateLikes = (e) => {
+		e.preventDefault()
+		let token = localStorage.getItem('token')
+		axios.patch(`${process.env.REACT_APP_API}/users?token=${token}`, {place: this.state.place._id})
+		.then(res => {
+			console.log('done');
+		})
+		.catch(err => {
+			console.log(err)
+		})
 	}
 
 	UNSAFE_componentWillReceiveProps(props) {
@@ -20,7 +33,7 @@ class Thumbnail extends React.Component {
 		return (
 			<Link className="card link" to={`/place/${this.state.place._id}`}>
 				<div className="image" style={{backgroundImage: 'url('+ this.state.place.img + ')'}}>
-					<button className="icon">
+					<button onClick={this.updateLikes} className="icon">
 						<i className="far fa-heart"></i>
 					</button>
 				</div>
