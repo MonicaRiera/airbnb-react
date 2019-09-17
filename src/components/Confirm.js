@@ -36,8 +36,10 @@ class Confirm extends React.Component {
 		user: {
 			name:'',
 			avatar:'',
-			likes: []
-		}
+			likes: [],
+			email: ''
+		},
+		paymentCard: false
 	}
 
 	componentDidMount() {
@@ -60,7 +62,7 @@ class Confirm extends React.Component {
 			form = this.props.location.form
 			let startDate = moment(form.startDate)
 			let finalDate = moment(form.finalDate)
-			nights = finalDate.diff(startDate, 'days') + 1
+			nights = finalDate.diff(startDate, 'days')
 			total = place.price * nights * form.guests
 		}
 
@@ -80,10 +82,41 @@ class Confirm extends React.Component {
 			form[field] = e
 		}
 		this.setState({form})
+		this.recalculate()
+	}
+
+	recalculate = () => {
+		let form = this.state.form
+		let nights = this.state.nights
+		let total = this.state.total
+
+		let startDate = moment(form.startDate)
+		let finalDate = moment(form.finalDate)
+		nights = finalDate.diff(startDate, 'days')
+		total = this.state.place.price * nights * form.guests
+
+		this.setState({
+			nights: nights,
+			total: total
+		})
+
 	}
 
 	goBack = () => {
 		this.props.history.goBack()
+	}
+
+	showPaymentCard = (e) => {
+		e.preventDefault()
+		let paymentCard = this.state.paymentCard
+		paymentCard = true
+		this.setState({paymentCard})
+	}
+
+	hidePaymentCard = () => {
+		let paymentCard = this.state.paymentCard
+		paymentCard = false
+		this.setState({paymentCard})
 	}
 
 	render () {
@@ -120,20 +153,23 @@ class Confirm extends React.Component {
 								<label>Total: {this.state.nights} nights</label>
 								<h2>${this.state.total}</h2>
 							</div>
-							<button className="primary">Confirm</button>
+							<button className="primary" onClick={this.showPaymentCard}>Confirm</button>
 						</form>
 						<hr/>
 						<button onClick={this.goBack}>Cancel</button>
 					</div>
 				</div>
 			</div>
-			<StripeProvider apiKey={process.env.REACT_APP_STRIPE_KEY}>
-				<div className='stripe-form'>
-					<Elements>
-						<StripeForm amount={this.state.total} description={this.state.place.title}/>
-					</Elements>
-				</div>
-			</StripeProvider>
+			{
+				this.state.paymentCard ?
+				<StripeProvider apiKey={process.env.REACT_APP_STRIPE_KEY}>
+					<div className='stripe-form'>
+						<Elements>
+							<StripeForm amount={this.state.total} description={this.state.place.title} changePaymentCardState={this.hidePaymentCard} client={this.state.user.email}/>
+						</Elements>
+					</div>
+				</StripeProvider> : ''
+			}
 			</>
 		)
 
