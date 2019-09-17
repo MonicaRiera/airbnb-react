@@ -1,40 +1,55 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import axios from 'axios'
 
 class Thumbnail extends React.Component {
 	state = {
 		place: this.props.place,
-		reviews: []
-	}
-
-	updateLikes = (e) => {
-		e.preventDefault()
-		let token = localStorage.getItem('token')
-		axios.patch(`${process.env.REACT_APP_API}/users?token=${token}`, {place: this.state.place._id})
-		.then(res => {
-			console.log('done');
-		})
-		.catch(err => {
-			console.log(err)
-		})
+		reviews: [],
+		liked: '',
+		user: {
+			likes: []
+		}
 	}
 
 	UNSAFE_componentWillReceiveProps(props) {
-		this.setState({place: props.place})
+		let liked = this.state.liked
+		if (props.user.likes.includes(props.place._id)) {
+			liked = true
+		} else {
+			liked = false
+		}
+		this.setState({
+			place: props.place,
+			user: props.user,
+			liked: liked
+		})
 	}
 
-	UNSAFE_componentWillMount() {
-		if (this.props.place.reviews) {
-			this.setState({reviews: this.props.place.reviews})
+	componentDidMount() {
+		let reviews = []
+		let user = this.state.user
+		let liked = this.state.liked
+		if (user.likes.includes(this.state.place._id)) {
+			liked = true
 		}
+
+		if (this.props.place.reviews) {
+			reviews = this.props.place.reviews
+		}
+		this.setState({
+			reviews: reviews,
+			liked: liked
+		})
 	}
+
 	render () {
 		return (
 			<Link className="card link" to={`/place/${this.state.place._id}`}>
 				<div className="image" style={{backgroundImage: 'url('+ this.state.place.img + ')'}}>
-					<button onClick={this.updateLikes} className="icon">
-						<i className="far fa-heart"></i>
+					<button onClick={(e) => this.props.updateLiked(e, this.state.place._id)} className="icon">
+						<i className={
+								this.state.liked? "fas fa-heart" : "far fa-heart"
+							}></i>
 					</button>
 				</div>
 				<div className="content">

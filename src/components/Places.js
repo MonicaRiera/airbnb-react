@@ -20,8 +20,10 @@ class Places extends React.Component {
 
 		user: {
 			name:'',
-			avatar:''
-		}
+			avatar:'',
+			likes: []
+		},
+		token: ''
 	}
 
 	searchFilter = (event, filter) => {
@@ -34,26 +36,33 @@ class Places extends React.Component {
 		})
 	}
 
-	UNSAFE_componentWillMount() {
-		let token = localStorage.getItem('token')
-		axios.get(`${process.env.REACT_APP_API}/auth?token=${token}`)
+	updateLiked = (e, placeId) => {
+		e.preventDefault()
+		axios.patch(`${process.env.REACT_APP_API}/users?token=${this.state.token}`, {place: placeId})
 		.then(res => {
-			this.setState({
-				user: res.data
-			})
+			let user = res.data
+			console.log(user.likes)
+			this.setState({user})
+		})
+		.catch(err => {
+			console.log(err)
 		})
 	}
 
 	componentDidMount() {
+		let token = localStorage.getItem('token')
 		Promise.all([
 			axios.get(`${process.env.REACT_APP_API}/places/`),
-			axios.get(`${process.env.REACT_APP_API}/types`)
+			axios.get(`${process.env.REACT_APP_API}/types`),
+			axios.get(`${process.env.REACT_APP_API}/auth?token=${token}`)
 		])
-		.then(([places, types]) => {
+		.then(([places, types, user]) => {
 			this.setState({
 				places: places.data,
 				filteredPlaces: places.data,
-				types: types.data
+				types: types.data,
+				user: user.data,
+				token: token
 			})
 		})
 		.catch(err => console.log(err))
@@ -90,7 +99,7 @@ class Places extends React.Component {
 			</div>
 			<div className="grid five large">
 			{
-				this.state.filteredPlaces.map((p,i) => <Thumbnail place={p} key={p._id} />)
+				this.state.filteredPlaces.map((p,i) => <Thumbnail place={p} key={p._id} user={this.state.user}  updateLiked={this.updateLiked}/>)
 			}
 			</div>
 			</>
