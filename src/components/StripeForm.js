@@ -18,7 +18,10 @@ class StripeForm extends React.Component {
 
 	render() {
 		return (
-			<CardElement />
+			<>
+				<CardElement />
+				<button className='primary' onClick={this.getToken}>Pay</button>
+			</>
 		)
 	}
 
