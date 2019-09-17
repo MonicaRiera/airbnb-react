@@ -2,10 +2,12 @@ import React from 'react'
 import Nav from './Nav'
 import Thumbnail from './Thumbnail'
 import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css";
+import "react-datepicker/dist/react-datepicker.css"
 import moment from 'moment'
 import axios from 'axios'
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom'
+import StripeForm from './StripeForm'
+import {Elements, StripeProvider} from 'react-stripe-elements'
 
 class Confirm extends React.Component {
 	state = {
@@ -31,10 +33,10 @@ class Confirm extends React.Component {
 		},
 		nights: 0,
 		total: 0,
-
 		user: {
 			name:'',
-			avatar:''
+			avatar:'',
+			likes: []
 		}
 	}
 
@@ -91,7 +93,7 @@ class Confirm extends React.Component {
 			<div className="grid medium">
 				<div className="grid sidebar-left">
 					<div className="sidebar">
-						<Thumbnail place={this.state.place} />
+						<Thumbnail place={this.state.place} user={this.state.user}/>
 					</div>
 					<div className="content">
 						<h2>Confirm Booking</h2>
@@ -125,7 +127,13 @@ class Confirm extends React.Component {
 					</div>
 				</div>
 			</div>
-
+			<StripeProvider apiKey={process.env.REACT_APP_STRIPE_KEY}>
+				<div className='stripe-form'>
+					<Elements>
+						<StripeForm amount={this.state.total} description={this.state.place.title}/>
+					</Elements>
+				</div>
+			</StripeProvider>
 			</>
 		)
 
